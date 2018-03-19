@@ -46,7 +46,8 @@ class MensajeTypeFilter(DjangoObjectType):
     """
 
 # @@@ Mutation @@@
-# Simple
+
+# Simple Mutation
 class CrearMensaje(graphene.Mutation):
     class Arguments:
         mensaje = graphene.String()
@@ -60,7 +61,17 @@ class CrearMensaje(graphene.Mutation):
         resultado = models.Mensaje.objects.create(mensaje=mensaje)
         return CrearMensaje(mensaje=resultado, form_errors="Creado correctamente")
 
+    """
+    Syntaxis:
 
+    mutation{
+      crearMensaje(mensaje:"texto"){
+        mensaje{
+          id, creation_date, etc
+        }
+      }
+    }
+    """
 
 # Dictionary
 class MensajeInput(graphene.InputObjectType):
@@ -90,23 +101,13 @@ class CrearMensajeDict(graphene.Mutation):
     }
     """
 
-
+# @@@ Core Mutation @@@
 class Mutation(graphene.AbstractType):
     crear_mensaje = CrearMensaje.Field()
     crear_mensaje_dict = CrearMensajeDict.Field()
-    """
-    Syntaxis:
 
-    mutation{
-      crearMensaje(mensaje:"texto"){
-        mensaje{
-          id, creation_date, etc
-        }
-      }
-    }
-    """
 
-# @@@ Query @@@
+# @@@ Core Query @@@
 class Query(graphene.AbstractType):
     filter_messages = DjangoFilterConnectionField(MensajeTypeFilter)
     all_messages = graphene.List(MensajeType)
