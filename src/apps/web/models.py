@@ -25,4 +25,5 @@ class Mensaje(models.Model):
     user = models.ForeignKey('auth.User', blank=True, null=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     mensaje = RichTextField("Mensaje")
+    activo = models.BooleanField(default=False)
 

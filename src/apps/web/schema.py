@@ -8,25 +8,31 @@ from . import models
 import json
 
 
-# Consulta Simple
+# @@@ Consulta Simple @@@
 class MensajeType(DjangoObjectType):
     class Meta:
         model = models.Mensaje
     """
+    Syntaxis:
+
     {
       allMessages{
         mensaje, id
       }
     }
     """
+# Este bloque va directo a la clase Query
 
-# Consulta filtrada
+
+# @@@ Consulta filtrada @@@
 class MensajeTypeFilter(DjangoObjectType):
     class Meta:
         model = models.Mensaje
         filter_fields = {'mensaje': ['icontains']}
         interfaces = (graphene.relay.Node, )
     """
+    Syntaxis:
+
     {
       filterMessages(mensaje_Icontains:"1"){
         edges{
@@ -38,25 +44,69 @@ class MensajeTypeFilter(DjangoObjectType):
     }
 
     """
-# class MensajeTypeMutation(graphene.ObjectType):
-#     mensaje = graphene.String()
 
-# Mutation
+# @@@ Mutation @@@
+# Simple
 class CrearMensaje(graphene.Mutation):
-    class Input:
+    class Arguments:
         mensaje = graphene.String()
 
     form_errors = graphene.String()
     mensaje = graphene.Field(lambda: MensajeType)
 
-    def mutate(self, args, mensaje):
+    @staticmethod
+    # Parameters for 2.0 graphene-django
+    def mutate(self, info, mensaje):
         resultado = models.Mensaje.objects.create(mensaje=mensaje)
-        return CrearMensaje(mensaje=resultado, form_errors=None)
+        return CrearMensaje(mensaje=resultado, form_errors="Creado correctamente")
+
+
+
+# Dictionary
+class MensajeInput(graphene.InputObjectType):
+    mensaje = graphene.String()
+    activo = graphene.Boolean()
+
+class CrearMensajeDict(graphene.Mutation):
+    class Arguments:
+        datos_mensaje = MensajeInput()
+
+    mensaje = graphene.Field(MensajeType)
+
+    @staticmethod
+    def mutate(self, info, datos_mensaje=None):
+        mensaje = models.Mensaje.objects.create(mensaje=datos_mensaje.mensaje,
+                                                activo=datos_mensaje.activo)
+        return CrearMensajeDict(mensaje=mensaje)
+
+    """
+    Syntaxis
+    mutation{
+        crearMensajeDict(datosMensaje:{mensaje:"prueba17", activo:false}){
+        mensaje{
+            id, mensaje, creationDate, activo
+            }
+        }
+    }
+    """
+
 
 class Mutation(graphene.AbstractType):
     crear_mensaje = CrearMensaje.Field()
+    crear_mensaje_dict = CrearMensajeDict.Field()
+    """
+    Syntaxis:
 
+    mutation{
+      crearMensaje(mensaje:"texto"){
+        mensaje{
+          id, creation_date, etc
+        }
+      }
+    }
+    """
 
+# @@@ Query @@@
 class Query(graphene.AbstractType):
     filter_messages = DjangoFilterConnectionField(MensajeTypeFilter)
     all_messages = graphene.List(MensajeType)
