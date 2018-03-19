@@ -8,7 +8,7 @@ from . import models
 import json
 
 
-# @@@ Consulta Simple @@@
+# @@@ Consulta General @@@
 class MensajeType(DjangoObjectType):
     class Meta:
         model = models.Mensaje
@@ -101,6 +101,8 @@ class CrearMensajeDict(graphene.Mutation):
     }
     """
 
+# Getting simple objects
+
 # @@@ Core Mutation @@@
 class Mutation(graphene.AbstractType):
     crear_mensaje = CrearMensaje.Field()
@@ -109,8 +111,23 @@ class Mutation(graphene.AbstractType):
 
 # @@@ Core Query @@@
 class Query(graphene.AbstractType):
-    filter_messages = DjangoFilterConnectionField(MensajeTypeFilter)
+
+    # consulta general
     all_messages = graphene.List(MensajeType)
 
+    # consulta filtrada
     def resolve_all_messages(self, args):
         return models.Mensaje.objects.all()
+
+    # consulta simple con argumento
+    mensaje = graphene.Field(MensajeType,
+                             id=graphene.Int())
+
+    def resolve_mensaje(self, info, **kwargs):
+        id = kwargs.get('id')
+
+        if id is not None:
+            return models.Mensaje.objects.get(pk=id)
+        return None
+
+    filter_messages = DjangoFilterConnectionField(MensajeTypeFilter)
