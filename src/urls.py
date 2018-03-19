@@ -6,9 +6,12 @@ from django.conf.urls.static import static
 from django.conf.urls import url, include
 from apps.web import urls as web_urls
 
+# Graph
+from graphene_django.views import GraphQLView
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     # Filebrowser url
+    url(r'^graphql', GraphQLView.as_view(graphiql=True)),
     url(r'^admin/filebrowser/', include(site.urls)),
     # Application number 1
     url(r'', include(web_urls, namespace='web')),

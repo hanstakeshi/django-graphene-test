@@ -51,6 +51,7 @@ LOCAL_APPS = [
 THIRD_PART_APPS = [
     'filebrowser',
     'ckeditor',
+    'graphene_django'
 ]
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PART_APPS
@@ -171,4 +172,10 @@ CKEDITOR_CONFIGS = {
         # 'width': 300,
         # "removePlugins": "Bold",
     },
+}
+
+# Configuracion graphene-django
+
+GRAPHENE = {
+    "SCHEMA": 'settings.schema.schema'
 }
