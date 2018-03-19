@@ -22,7 +22,7 @@ class ModelExample(models.Model):
 
 
 class Mensaje(models.Model):
-    user = models.ForeignKey('auth.User')
+    user = models.ForeignKey('auth.User', blank=True, null=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     mensaje = RichTextField("Mensaje")
 

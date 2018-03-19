@@ -5,6 +5,7 @@ from graphene_django.types import DjangoObjectType
 # Filter Graph
 from graphene_django.filter import DjangoFilterConnectionField
 from . import models
+import json
 
 
 # Consulta Simple
@@ -37,6 +38,24 @@ class MensajeTypeFilter(DjangoObjectType):
     }
 
     """
+# class MensajeTypeMutation(graphene.ObjectType):
+#     mensaje = graphene.String()
+
+# Mutation
+class CrearMensaje(graphene.Mutation):
+    class Input:
+        mensaje = graphene.String()
+
+    form_errors = graphene.String()
+    mensaje = graphene.Field(lambda: MensajeType)
+
+    def mutate(self, args, mensaje):
+        resultado = models.Mensaje.objects.create(mensaje=mensaje)
+        return CrearMensaje(mensaje=resultado, form_errors=None)
+
+class Mutation(graphene.AbstractType):
+    crear_mensaje = CrearMensaje.Field()
+
 
 class Query(graphene.AbstractType):
     filter_messages = DjangoFilterConnectionField(MensajeTypeFilter)
