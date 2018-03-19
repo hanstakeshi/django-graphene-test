@@ -51,7 +51,7 @@ LOCAL_APPS = [
 THIRD_PART_APPS = [
     'filebrowser',
     'ckeditor',
-    'graphene_django'
+    'graphene_django',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PART_APPS
