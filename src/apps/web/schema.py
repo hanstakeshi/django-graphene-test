@@ -5,7 +5,6 @@ from graphene_django.types import DjangoObjectType
 # Filter Graph
 from graphene_django.filter import DjangoFilterConnectionField
 from . import models
-import json
 
 
 # @@@ Consulta General @@@
@@ -43,6 +42,18 @@ class MensajeTypeFilter(DjangoObjectType):
       }
     }
 
+    Al usar filter, tambien puedes usar los parametros 
+    tales como first, last, before, after 
+    query{
+        filterMessages(first:4){
+            edges{
+                nodes{
+                    id, mensaje
+                    }
+                }
+            }
+        }
+
     """
 
 # @@@ Mutation @@@
@@ -55,8 +66,8 @@ class CrearMensaje(graphene.Mutation):
     form_errors = graphene.String()
     mensaje = graphene.Field(lambda: MensajeType)
 
-    @staticmethod
     # Parameters for 2.0 graphene-django
+    @staticmethod
     def mutate(self, info, mensaje):
         resultado = models.Mensaje.objects.create(mensaje=mensaje)
         return CrearMensaje(mensaje=resultado, form_errors="Creado correctamente")
@@ -73,7 +84,7 @@ class CrearMensaje(graphene.Mutation):
     }
     """
 
-# Dictionary
+# Dictionary Mutation
 class MensajeInput(graphene.InputObjectType):
     mensaje = graphene.String()
     activo = graphene.Boolean()
