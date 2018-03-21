@@ -26,4 +26,3 @@ class Mensaje(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True)
     mensaje = RichTextField("Mensaje")
     activo = models.BooleanField(default=False)
-
